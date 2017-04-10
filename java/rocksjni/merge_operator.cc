@@ -32,6 +32,6 @@ jlong Java_org_rocksdb_StringAppendOperator_newMergeOperatorHandleImpl
 (JNIEnv* env, jobject jobj) {
   std::shared_ptr<rocksdb::MergeOperator> *op =
     new std::shared_ptr<rocksdb::MergeOperator>();
-  *op = rocksdb::MergeOperators::CreateFromStringId("stringappend");
+  *op = rocksdb::MergeOperators::CreateFromStringId("stringappendtest");
   return reinterpret_cast<jlong>(op);
 }

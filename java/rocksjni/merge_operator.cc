@@ -13,6 +13,7 @@
 #include <string>
 
 #include "include/org_rocksdb_StringAppendOperator.h"
+#include "include/org_rocksdb_StringAppendOperatorWithVariableDelimitor.h"
 #include "rocksdb/db.h"
 #include "rocksdb/memtablerep.h"
 #include "rocksdb/merge_operator.h"
@@ -37,10 +38,23 @@ jlong Java_org_rocksdb_StringAppendOperator_newSharedStringAppendOperator(
 
 /*
  * Class:     org_rocksdb_StringAppendOperator
+ * Method:    disposeInternal
+ * Signature: (J)V
+ */
+void Java_org_rocksdb_StringAppendOperator_disposeInternal(JNIEnv* /*env*/,
+                                                           jobject /*jobj*/,
+                                                           jlong jhandle) {
+  auto* sptr_string_append_op =
+      reinterpret_cast<std::shared_ptr<rocksdb::MergeOperator>*>(jhandle);
+  delete sptr_string_append_op;  // delete std::shared_ptr
+}
+
+/*
+ * Class:     org_rocksdb_StringAppendOperatorWithVariableDelimitor
  * Method:    newSharedStringAppendTESTOperator
  * Signature: ([B)J
  */
-jlong Java_org_rocksdb_StringAppendOperator_newSharedStringAppendTESTOperator(
+jlong Java_org_rocksdb_StringAppendOperatorWithVariableDelimitor_newSharedStringAppendTESTOperator(
         JNIEnv* env, jclass /*jclazz*/, jbyteArray jdelim) {
   jboolean has_exception = JNI_FALSE;
   std::string delim = rocksdb::JniUtil::byteString<std::string>(
@@ -58,14 +72,14 @@ jlong Java_org_rocksdb_StringAppendOperator_newSharedStringAppendTESTOperator(
 }
 
 /*
- * Class:     org_rocksdb_StringAppendOperator
+ * Class:     org_rocksdb_StringAppendOperatorWithVariableDelimitor
  * Method:    disposeInternal
  * Signature: (J)V
  */
-void Java_org_rocksdb_StringAppendOperator_disposeInternal(JNIEnv* /*env*/,
-                                                           jobject /*jobj*/,
-                                                           jlong jhandle) {
-  auto* sptr_string_append_op =
-      reinterpret_cast<std::shared_ptr<rocksdb::MergeOperator>*>(jhandle);
-  delete sptr_string_append_op;  // delete std::shared_ptr
+void Java_org_rocksdb_StringAppendOperatorWithVariableDelimitor_disposeInternal(JNIEnv* /*env*/,
+                                                                                jobject /*jobj*/,
+                                                                                jlong jhandle) {
+  auto* sptr_string_append_test_op =
+          reinterpret_cast<std::shared_ptr<rocksdb::MergeOperator>*>(jhandle);
+  delete sptr_string_append_test_op;  // delete std::shared_ptr
 }

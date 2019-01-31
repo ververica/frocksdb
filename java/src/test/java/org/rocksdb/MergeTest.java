@@ -115,7 +115,7 @@ public class MergeTest {
   }
 
   private void stringDelimiter(String delim) throws RocksDBException {
-    try (final StringAppendOperator stringAppendOperator = new StringAppendOperator(delim.getBytes());
+    try (final MergeOperator stringAppendOperator = new StringAppendOperatorWithVariableDelimitor(delim.getBytes());
          final Options opt = new Options()
                  .setCreateIfMissing(true)
                  .setMergeOperator(stringAppendOperator);

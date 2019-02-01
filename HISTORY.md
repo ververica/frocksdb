@@ -1,4 +1,8 @@
-# Rocksdb Change Log
+# FRocksdb Change Log
+
+# 5.17.2-artisans (07/02/2019)
+* [Flink TTL] compaction filter for background cleanup of state with time-to-live
+* [Flink ListState] Separator-free merge operator
 
 # 5.17.2 (10/24/2018)
 ### Bug Fixes

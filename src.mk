@@ -280,6 +280,7 @@ LIB_SOURCES =                                                   \
   utilities/fault_injection_env.cc                              \
   utilities/fault_injection_fs.cc                               \
   utilities/fault_injection_secondary_cache.cc                  \
+  utilities/flink/flink_compaction_filter.cc                    \
   utilities/leveldb_options/leveldb_options.cc                  \
   utilities/memory/memory_util.cc                               \
   utilities/merge_operators.cc                                  \
@@ -612,6 +613,7 @@ TEST_MAIN_SOURCES =                                                     \
   utilities/cassandra/cassandra_serialize_test.cc                       \
   utilities/checkpoint/checkpoint_test.cc                               \
   utilities/env_timed_test.cc                                           \
+  utilities/flink/flink_compaction_filter_test.cc                       \
   utilities/memory/memory_test.cc                                       \
   utilities/merge_operators/string_append/stringappend_test.cc          \
   utilities/object_registry_test.cc                                     \
@@ -668,6 +670,7 @@ JNI_NATIVE_SOURCES =                                          \
   java/rocksjni/event_listener.cc                             \
   java/rocksjni/event_listener_jnicallback.cc                 \
   java/rocksjni/import_column_family_options.cc               \
+  java/rocksjni/flink_compactionfilterjni.cc                  \
   java/rocksjni/ingest_external_file_options.cc               \
   java/rocksjni/filter.cc                                     \
   java/rocksjni/hyper_clock_cache.cc                          \

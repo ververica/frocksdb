@@ -41,6 +41,7 @@ set(JNI_NATIVE_SOURCES
         rocksjni/event_listener.cc
         rocksjni/event_listener_jnicallback.cc
         rocksjni/export_import_files_metadatajni.cc
+        rocksjni/flink_compactionfilterjni.cc
         rocksjni/filter.cc
         rocksjni/import_column_family_options.cc
         rocksjni/hyper_clock_cache.cc
@@ -165,6 +166,7 @@ set(JAVA_MAIN_CLASSES
   src/main/java/org/rocksdb/Filter.java
   src/main/java/org/rocksdb/FilterPolicyType.java
   src/main/java/org/rocksdb/FileOperationInfo.java
+  src/main/java/org/rocksdb/FlinkCompactionFilter.java
   src/main/java/org/rocksdb/FlushJobInfo.java
   src/main/java/org/rocksdb/FlushReason.java
   src/main/java/org/rocksdb/FlushOptions.java
@@ -685,6 +687,7 @@ if(${CMAKE_VERSION} VERSION_LESS "3.11.4")
           org.rocksdb.Env
           org.rocksdb.EnvOptions
           org.rocksdb.Filter
+          org.rocksdb.FlinkCompactionFilter
           org.rocksdb.FlushOptions
           org.rocksdb.HashLinkedListMemTableConfig
           org.rocksdb.HashSkipListMemTableConfig

@@ -7,17 +7,20 @@
 // This file implements the "bridge" between Java and C++
 // for ROCKSDB_NAMESPACE::MergeOperator.
 
+#include "rocksdb/merge_operator.h"
+
 #include <jni.h>
 #include <stdio.h>
 #include <stdlib.h>
+
 #include <memory>
 #include <string>
 
 #include "include/org_rocksdb_StringAppendOperator.h"
+#include "include/org_rocksdb_StringAppendOperatorWithVariableDelimitor.h"
 #include "include/org_rocksdb_UInt64AddOperator.h"
 #include "rocksdb/db.h"
 #include "rocksdb/memtablerep.h"
-#include "rocksdb/merge_operator.h"
 #include "rocksdb/options.h"
 #include "rocksdb/slice_transform.h"
 #include "rocksdb/statistics.h"
@@ -78,4 +81,41 @@ void Java_org_rocksdb_UInt64AddOperator_disposeInternal(JNIEnv* /*env*/,
       reinterpret_cast<std::shared_ptr<ROCKSDB_NAMESPACE::MergeOperator>*>(
           jhandle);
   delete sptr_uint64_add_op;  // delete std::shared_ptr
+}
+
+/*
+ * Class:     org_rocksdb_StringAppendOperatorWithVariableDelimitor
+ * Method:    newSharedStringAppendTESTOperator
+ * Signature: ([B)J
+ */
+jlong Java_org_rocksdb_StringAppendOperatorWithVariableDelimitor_newSharedStringAppendTESTOperator(
+    JNIEnv* env, jclass /*jclazz*/, jbyteArray jdelim) {
+  jboolean has_exception = JNI_FALSE;
+  std::string delim = ROCKSDB_NAMESPACE::JniUtil::byteString<std::string>(
+      env, jdelim,
+      [](const char* str, const size_t len) { return std::string(str, len); },
+      &has_exception);
+  if (has_exception == JNI_TRUE) {
+    // exception occurred
+    return 0;
+  }
+
+  auto* sptr_string_append_test_op =
+      new std::shared_ptr<ROCKSDB_NAMESPACE::MergeOperator>(
+          ROCKSDB_NAMESPACE::MergeOperators::CreateStringAppendTESTOperator(
+              delim));
+  return reinterpret_cast<jlong>(sptr_string_append_test_op);
+}
+
+/*
+ * Class:     org_rocksdb_StringAppendOperatorWithVariableDelimitor
+ * Method:    disposeInternal
+ * Signature: (J)V
+ */
+void Java_org_rocksdb_StringAppendOperatorWithVariableDelimitor_disposeInternal(
+    JNIEnv* /*env*/, jobject /*jobj*/, jlong jhandle) {
+  auto* sptr_string_append_test_op =
+      reinterpret_cast<std::shared_ptr<ROCKSDB_NAMESPACE::MergeOperator>*>(
+          jhandle);
+  delete sptr_string_append_test_op;  // delete std::shared_ptr
 }

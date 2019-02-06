@@ -125,6 +125,7 @@ set(NATIVE_JAVA_CLASSES
         org.rocksdb.SstFileWriter
         org.rocksdb.Statistics
         org.rocksdb.StringAppendOperator
+        org.rocksdb.StringAppendOperatorWithVariableDelimitor
         org.rocksdb.TableFormatConfig
         org.rocksdb.Transaction
         org.rocksdb.TransactionDB
@@ -263,6 +264,7 @@ add_jar(
   src/main/java/org/rocksdb/StatsLevel.java
   src/main/java/org/rocksdb/Status.java
   src/main/java/org/rocksdb/StringAppendOperator.java
+  src/main/java/org/rocksdb/StringAppendOperatorWithVariableDelimitor.java
   src/main/java/org/rocksdb/TableFormatConfig.java
   src/main/java/org/rocksdb/TickerType.java
   src/main/java/org/rocksdb/TransactionalDB.java

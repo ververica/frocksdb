@@ -29,6 +29,7 @@ set(JNI_NATIVE_SOURCES
         rocksjni/config_options.cc
         rocksjni/env.cc
         rocksjni/env_options.cc
+        rocksjni/flink_compactionfilterjni.cc
         rocksjni/filter.cc
         rocksjni/ingest_external_file_options.cc
         rocksjni/iterator.cc
@@ -140,6 +141,7 @@ set(JAVA_MAIN_CLASSES
   src/main/java/org/rocksdb/EnvOptions.java
   src/main/java/org/rocksdb/Experimental.java
   src/main/java/org/rocksdb/Filter.java
+  src/main/java/org/rocksdb/FlinkCompactionFilter.java
   src/main/java/org/rocksdb/FlushOptions.java
   src/main/java/org/rocksdb/HashLinkedListMemTableConfig.java
   src/main/java/org/rocksdb/HashSkipListMemTableConfig.java
@@ -415,6 +417,7 @@ if(${CMAKE_VERSION} VERSION_LESS "3.11.4" OR (${Java_VERSION_MINOR} STREQUAL "7"
           org.rocksdb.Env
           org.rocksdb.EnvOptions
           org.rocksdb.Filter
+          org.rocksdb.FlinkCompactionFilter
           org.rocksdb.FlushOptions
           org.rocksdb.HashLinkedListMemTableConfig
           org.rocksdb.HashSkipListMemTableConfig

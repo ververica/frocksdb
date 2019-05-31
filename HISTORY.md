@@ -4,6 +4,7 @@
 ### Java API Changes
 * Allow rocks java to explicitly create `WriteBufferManager` which could help bound the memory usage of all write buffers.
 * Add more flags for BlockBasedTableConfig, mostly around caching index + filter blocks and partitioned filters. These options could help to minimize the performance impact when bounding the total memory.
+* options.keep_log_file_num will be enforced strictly all the time. File names of all log files will be tracked, which may take significantly amount of memory if options.keep_log_file_num is large and either of options.max_log_file_size or options.log_file_time_to_roll is set.
 
 # 5.17.2-artisans-1.0 (07/02/2019)
 * [Flink TTL] compaction filter for background cleanup of state with time-to-live

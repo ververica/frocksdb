@@ -646,7 +646,7 @@ std::unique_ptr<RangeDelIterator> RangeDelAggregator::NewIterator() {
       iter->AddIterator(stripe.second->NewIterator());
     }
   }
-  return std::move(iter);
+  return iter;
 }
 
 }  // namespace rocksdb

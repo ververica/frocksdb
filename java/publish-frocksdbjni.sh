@@ -20,22 +20,22 @@
 # fail on errors
 set -e
 
+PREFIX=java/target/frocksdb-release/frocksdbjni-${VERSION}
+
 function deploy() {
   FILE=$1
   CLASSIFIER=$2
-  echo "Deploying file=${FILE} with classifier=${CLASSIFIER} to sonatype"
+  echo "Deploying file=${FILE} with classifier=${CLASSIFIER} to sonatype with prefix=${PREFIX}"
   sonatype_user=${USER} sonatype_pw=${PASSWORD} mvn gpg:sign-and-deploy-file \
    --settings java/deploysettings.xml \
    -Durl=https://oss.sonatype.org/service/local/staging/deploy/maven2/ \
    -DrepositoryId=sonatype-nexus-staging \
-   -DpomFile=java/frocksdbjni-${VERSION}.pom \
+   -DpomFile=${PREFIX}.pom \
    -Dfile=$FILE \
    -Dclassifier=$CLASSIFIER \
    -Dgpg.keyname=${KEYNAME}  \
    -Dgpg.passphrase=${PASSPHRASE}
 }
-
-PREFIX=java/target/frocksdb-release/frocksdbjni-${VERSION}
 
 deploy ${PREFIX}-sources.jar sources
 deploy ${PREFIX}-javadoc.jar javadoc

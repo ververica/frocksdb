@@ -16,12 +16,12 @@ Optionally:
 
     choco install intellijidea-community vscode
 
-Open git bash and run commands:
+Open developer command prompt for vs 2017 and run commands:
 
     git clone git@github.com:dataArtisans/frocksdb.git
     cd frocksdb
     git checkout FRocksDB-5.17.2 # release branch
-    java/crossbuild/build-win.bat
+    java\crossbuild\build-win.bat
 
 The result native library is `build\java\Release\rocksdbjni-shared.dll`.
 The result windows jar is `build\java\rocksdbjni_classes.jar`.

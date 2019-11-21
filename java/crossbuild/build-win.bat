@@ -12,5 +12,5 @@ cmake -G "Visual Studio 15 Win64" -DWITH_JNI=1 ..
 
 cd ..
 
-copy build\Release\rocksdb-shared.dll librocksdbjni-win64.dll
+copy build\java\Release\rocksdbjni-shared.dll librocksdbjni-win64.dll
 echo Result is in librocksdbjni-win64.dll

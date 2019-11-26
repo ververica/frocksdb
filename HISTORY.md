@@ -1,6 +1,11 @@
 # FRocksdb Change Log
 
-# 5.17.2-artisans (07/02/2019)
+# 5.17.2-artisans-1.1 (11/26/2019)
+### Java API Changes
+* Allow rocks java to explicitly create `WriteBufferManager`.
+* Punch through more flags for rocks java's `BlockBasedTableConfig`.
+
+# 5.17.2-artisans-1.0 (07/02/2019)
 * [Flink TTL] compaction filter for background cleanup of state with time-to-live
 * [Flink ListState] Separator-free merge operator
 

@@ -1,9 +1,9 @@
 # FRocksdb Change Log
 
-# 5.17.2-artisans-1.1 (11/26/2019)
+# 5.17.2-artisans-2.0 (11/26/2019)
 ### Java API Changes
-* Allow rocks java to explicitly create `WriteBufferManager`.
-* Punch through more flags for rocks java's `BlockBasedTableConfig`.
+* Allow rocks java to explicitly create `WriteBufferManager` which could help bound the memory usage of all write buffers.
+* Add more flags for BlockBasedTableConfig, mostly around caching index + filter blocks and partitioned filters. These options could help to minimize the performance impact when bounding the total memory.
 
 # 5.17.2-artisans-1.0 (07/02/2019)
 * [Flink TTL] compaction filter for background cleanup of state with time-to-live

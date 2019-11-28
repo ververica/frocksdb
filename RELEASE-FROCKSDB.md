@@ -72,7 +72,7 @@ Run commands:
     cp <path-to-windows-dll>/rocksdbjni-shared.dll java/target/librocksdbjni-win64.dll
     cp <path-to-windows-jar>/rocksdbjni_classes.jar java/target/rocksdbjni_classes.jar
     cp <path-to-ppc64le-lib-so>/librocksdbjni-linux-ppc64le.so java/target/librocksdbjni-linux-ppc64le.so
-    FROCKSDB_VERSION=1.0 make frocksdbjavastaticrelease
+    FROCKSDB_VERSION=2.0 make frocksdbjavastaticrelease
 
 ## Push to maven central
 

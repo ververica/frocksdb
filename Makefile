@@ -6,7 +6,7 @@
 
 #-----------------------------------------------
 
-FROCKSDB_VERSION ?= 1.0
+FROCKSDB_VERSION ?= 2.0
 
 BASH_EXISTS := $(shell which bash)
 SHELL := $(shell which bash)

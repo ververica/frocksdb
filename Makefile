@@ -95,6 +95,24 @@ ifeq ($(MAKECMDGOALS),rocksdbjavastaticpublish)
 	DEBUG_LEVEL=0
 endif
 
+ifeq ($(MAKECMDGOALS),frocksdbjavastatic)
+	ifneq ($(DEBUG_LEVEL),2)
+		DEBUG_LEVEL=0
+	endif
+endif
+
+ifeq ($(MAKECMDGOALS),frocksdbjavastaticrelease)
+	DEBUG_LEVEL=0
+endif
+
+ifeq ($(MAKECMDGOALS),frocksdbjavastaticreleasedocker)
+        DEBUG_LEVEL=0
+endif
+
+ifeq ($(MAKECMDGOALS),frocksdbjavastaticpublish)
+	DEBUG_LEVEL=0
+endif
+
 # compile with -O2 if debug level is not 2
 ifneq ($(DEBUG_LEVEL), 2)
 OPT += -O2 -fno-omit-frame-pointer

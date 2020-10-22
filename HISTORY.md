@@ -1,3 +1,11 @@
+# FRocksdb Change Log
+## 6.11.6-veverica-1.0 (10/22/2020)
+### Features
+* [Flink TTL] compaction filter for background cleanup of state with time-to-live
+* [Flink ListState] Separator-free merge operator
+### Bug FIxes
+* Fix a bug which may cause MultiGet to be slow because it may read more data than requested, but this won't affect correctness. The bug was introduced in 6.10 release.
+
 # Rocksdb Change Log
 ## 6.11.6 (10/12/2020)
 ### Bug Fixes

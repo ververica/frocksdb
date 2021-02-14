@@ -6,6 +6,8 @@
 
 #-----------------------------------------------
 
+FROCKSDB_VERSION ?= 1.0
+
 BASH_EXISTS := $(shell which bash)
 SHELL := $(shell which bash)
 # Default to python3. Some distros like CentOS 8 do not have `python`.
@@ -2125,16 +2127,71 @@ rocksdbjavastatic: $(java_static_all_libobjects)
 		strip $(STRIPFLAGS) $(ROCKSDBJNILIB); \
 	fi
 	cd java;jar -cf target/$(ROCKSDB_JAR) HISTORY*.md
+	jar -uf java/target/$(ROCKSDB_JAR) HISTORY*.md
 	cd java/target;jar -uf $(ROCKSDB_JAR) $(ROCKSDBJNILIB)
 	cd java/target/classes;jar -uf ../$(ROCKSDB_JAR) org/rocksdb/*.class org/rocksdb/util/*.class
 	cd java/target/apidocs;jar -cf ../$(ROCKSDB_JAVADOCS_JAR) *
 	cd java/src/main/java;jar -cf ../../../target/$(ROCKSDB_SOURCES_JAR) org
 
+	mkdir -p java/target/META-INF
+	cp LICENSE.Apache java/target/META-INF/LICENSE
+	cd java/target;jar -uf $(ROCKSDB_JAR) META-INF/LICENSE
+
 rocksdbjavastaticrelease: rocksdbjavastatic
 	cd java/crossbuild && (vagrant destroy -f || true) && vagrant up linux32 && vagrant halt linux32 && vagrant up linux64 && vagrant halt linux64 && vagrant up linux64-musl && vagrant halt linux64-musl
 	cd java;jar -cf target/$(ROCKSDB_JAR_ALL) HISTORY*.md
-	cd java/target;jar -uf $(ROCKSDB_JAR_ALL) librocksdbjni-*.so librocksdbjni-*.jnilib
+	jar -uf java/target/$(ROCKSDB_JAR_ALL) HISTORY*.md
+	cd java/target;jar -uf $(ROCKSDB_JAR_ALL) librocksdbjni-*.so librocksdbjni-*.jnilib librocksdbjni-win64.dll
 	cd java/target/classes;jar -uf ../$(ROCKSDB_JAR_ALL) org/rocksdb/*.class org/rocksdb/util/*.class
+
+frocksdbjavastaticrelease: rocksdbjavastaticrelease
+	# update license
+	mkdir -p java/target/META-INF
+	cp LICENSE.Apache java/target/META-INF/LICENSE
+	cd java/target;jar -uf $(ROCKSDB_JAR_ALL) META-INF/LICENSE
+
+	# platform jars
+	$(eval JAR_PREF=rocksdbjni-$(ROCKSDB_MAJOR).$(ROCKSDB_MINOR).$(ROCKSDB_PATCH))
+	$(eval JAR_DOCS=$(JAR_PREF)-javadoc.jar)
+	$(eval JAR_SOURCES=$(JAR_PREF)-sources.jar)
+	$(eval OSX_JAR=$(JAR_PREF)-osx.jar)
+	$(eval WIN_JAR=$(JAR_PREF)-win64.jar)
+	$(eval LINUX32_JAR=$(JAR_PREF)-linux32.jar)
+	$(eval LINUX64_JAR=$(JAR_PREF)-linux64.jar)
+
+	# update windows jar
+	cd java/target;cp rocksdbjni_classes.jar $(WIN_JAR)
+	cd java;jar -uf target/$(WIN_JAR) HISTORY*.md
+	jar -uf java/target/$(WIN_JAR) HISTORY*.md
+	cd java/target;jar -uf $(WIN_JAR) librocksdbjni-win64.dll
+	cd java/target;jar -uf $(WIN_JAR) META-INF/LICENSE
+
+	# update linux 64 jar with ppc64 lib
+	cd java/target;jar -uf $(LINUX64_JAR) librocksdbjni-linux-ppc64le.so
+
+	cd java/target;jar -uf $(JAR_DOCS) META-INF/LICENSE
+	cd java/target;jar -uf $(JAR_SOURCES) META-INF/LICENSE
+
+	# prepare frocksdb release
+	cd java/target;mkdir -p frocksdb-release
+
+	$(eval FJAR_PREF=frocksdbjni-$(ROCKSDB_MAJOR).$(ROCKSDB_MINOR).$(ROCKSDB_PATCH)-ververica-$(FROCKSDB_VERSION))
+	$(eval FJAR=$(FJAR_PREF).jar)
+	$(eval FJAR_DOCS=$(FJAR_PREF)-javadoc.jar)
+	$(eval FJAR_SOURCES=$(FJAR_PREF)-sources.jar)
+	$(eval OSX_FJAR=$(FJAR_PREF)-osx.jar)
+	$(eval WIN_FJAR=$(FJAR_PREF)-win64.jar)
+	$(eval LINUX32_FJAR=$(FJAR_PREF)-linux32.jar)
+	$(eval LINUX64_FJAR=$(FJAR_PREF)-linux64.jar)
+
+	cd java/target;cp $(ROCKSDB_JAR_ALL) frocksdb-release/$(FJAR)
+	cd java/target;cp $(JAR_DOCS) frocksdb-release/$(FJAR_DOCS)
+	cd java/target;cp $(JAR_SOURCES) frocksdb-release/$(FJAR_SOURCES)
+	cd java/target;cp $(OSX_JAR) frocksdb-release/$(OSX_FJAR)
+	cd java/target;cp $(WIN_JAR) frocksdb-release/$(WIN_FJAR)
+	cd java/target;cp $(LINUX32_JAR) frocksdb-release/$(LINUX32_FJAR)
+	cd java/target;cp $(LINUX64_JAR) frocksdb-release/$(LINUX64_FJAR)
+	cd java;cp rocksjni.pom target/frocksdb-release/$(FJAR_PREF).pom
 
 rocksdbjavastaticreleasedocker: rocksdbjavastatic rocksdbjavastaticdockerx86 rocksdbjavastaticdockerx86_64 rocksdbjavastaticdockerx86musl rocksdbjavastaticdockerx86_64musl
 	cd java;jar -cf target/$(ROCKSDB_JAR_ALL) HISTORY*.md

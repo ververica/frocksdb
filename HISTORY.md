@@ -1,5 +1,8 @@
 # FRocksdb Change Log
 
+# 5.17.2-ververica-2.1 (07/20/2021)
+* Bump the version of bzip2 to 1.0.8
+
 # 5.17.2-artisans-2.0 (11/26/2019)
 ### Java API Changes
 * Allow rocks java to explicitly create `WriteBufferManager` which could help bound the memory usage of all write buffers.

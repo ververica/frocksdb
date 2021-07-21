@@ -1342,6 +1342,9 @@ histogram_test: $(OBJ_DIR)/monitoring/histogram_test.o $(TEST_LIBRARY) $(LIBRARY
 thread_local_test: $(OBJ_DIR)/util/thread_local_test.o $(TEST_LIBRARY) $(LIBRARY)
 	$(AM_LINK)
 
+flink_compaction_filter_test: $(OBJ_DIR)/utilities/flink/flink_compaction_filter_test.o $(LIBOBJECTS) $(TESTHARNESS)
+	$(AM_LINK)
+
 work_queue_test: $(OBJ_DIR)/util/work_queue_test.o $(TEST_LIBRARY) $(LIBRARY)
 	$(AM_LINK)
 

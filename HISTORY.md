@@ -1,3 +1,9 @@
+# FRocksdb Change Log
+## 6.20.2-ververica-1.0 (08/09/2021)
+### Improvement
+* [Flink TTL] compaction filter for background cleanup of state with time-to-live
+* [FLINK-19710] Revert implementation of PerfContext back to __thread to avoid performance regression
+
 # Rocksdb Change Log
 > NOTE: Entries for next release do not go here. Follow instructions in `unreleased_history/README.txt`
 

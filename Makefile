@@ -6,6 +6,8 @@
 
 #-----------------------------------------------
 
+FROCKSDB_VERSION ?= 1.0
+
 BASH_EXISTS := $(shell which bash)
 SHELL := $(shell which bash)
 # Default to python3. Some distros like CentOS 8 do not have `python`.
@@ -2137,9 +2139,41 @@ rocksdbjavastaticrelease: rocksdbjavastatic
 
 rocksdbjavastaticreleasedocker: rocksdbjavastatic rocksdbjavastaticdockerx86 rocksdbjavastaticdockerx86_64 rocksdbjavastaticdockerx86musl rocksdbjavastaticdockerx86_64musl
 	cd java;jar -cf target/$(ROCKSDB_JAR_ALL) HISTORY*.md
-	cd java/target;jar -uf $(ROCKSDB_JAR_ALL) librocksdbjni-*.so librocksdbjni-*.jnilib
+	jar -uf java/target/$(ROCKSDB_JAR_ALL) HISTORY*.md
+	cd java/target;jar -uf $(ROCKSDB_JAR_ALL) librocksdbjni-*.so librocksdbjni-*.jnilib librocksdbjni-win64.dll
 	cd java/target/classes;jar -uf ../$(ROCKSDB_JAR_ALL) org/rocksdb/*.class org/rocksdb/util/*.class
 	openssl sha1 java/target/$(ROCKSDB_JAR_ALL) | sed 's/.*= \([0-9a-f]*\)/\1/' > java/target/$(ROCKSDB_JAR_ALL).sha1
+
+frocksdbjavastaticreleasedocker: rocksdbjavastaticreleasedocker
+	# update apache license
+	mkdir -p java/target/META-INF
+	cp LICENSE.Apache java/target/META-INF/LICENSE
+	cd java/target;jar -uf $(ROCKSDB_JAR_ALL) META-INF/LICENSE
+
+	# jars to be released
+	$(eval JAR_PREF=rocksdbjni-$(ROCKSDB_MAJOR).$(ROCKSDB_MINOR).$(ROCKSDB_PATCH))
+	$(eval JAR_DOCS=$(JAR_PREF)-javadoc.jar)
+	$(eval JAR_SOURCES=$(JAR_PREF)-sources.jar)
+
+	# update docs and sources jars
+	cd java/target;jar -uf $(JAR_DOCS) META-INF/LICENSE
+	cd java/target;jar -uf $(JAR_SOURCES) META-INF/LICENSE
+
+	# prepare frocksdb release
+	cd java/target;mkdir -p frocksdb-release
+
+	$(eval FROCKSDB_JAVA_VERSION=$(ROCKSDB_MAJOR).$(ROCKSDB_MINOR).$(ROCKSDB_PATCH)-ververica-$(FROCKSDB_VERSION))
+	$(eval FJAR_PREF=frocksdbjni-$(FROCKSDB_JAVA_VERSION))
+	$(eval FJAR=$(FJAR_PREF).jar)
+	$(eval FJAR_DOCS=$(FJAR_PREF)-javadoc.jar)
+	$(eval FJAR_SOURCES=$(FJAR_PREF)-sources.jar)
+
+	cd java/target;cp $(ROCKSDB_JAR_ALL) frocksdb-release/$(FJAR)
+	cd java/target;cp $(JAR_DOCS) frocksdb-release/$(FJAR_DOCS)
+	cd java/target;cp $(JAR_SOURCES) frocksdb-release/$(FJAR_SOURCES)
+	openssl sha1 java/target/$(ROCKSDB_JAR_ALL) | sed 's/.*= \([0-9a-f]*\)/\1/' > java/target/$(ROCKSDB_JAR_ALL).sha1
+	cd java;cat pom.xml.template | sed 's/\$${FROCKSDB_JAVA_VERSION}/$(FROCKSDB_JAVA_VERSION)/' > pom.xml
+	cd java;cp pom.xml target/frocksdb-release/$(FJAR_PREF).pom
 
 rocksdbjavastaticdockerx86:
 	mkdir -p java/target

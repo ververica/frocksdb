@@ -32,13 +32,17 @@ The result windows jar is `build\java\rocksdbjni_classes.jar`.
 There is also a how-to in CMakeLists.txt.
 
 ## Build in PPC64LE
+We can build binaries on ppc64le platform in two ways: build on a powerPC machine directly or build within a docker machine via QEMU.
+I strongly suggest to build on a powerPC machine.
 
 ### Build on a powerPC machine
-Strongly suggest you to build on native powerPC machine:
+Run commands separately to get binaries.
 
+    make jclean clean rocksdbjavastaticdockerppc64le
+    make jclean clean rocksdbjavastaticdockerppc64lemusl
 
 ### Build within a docker machine via QEMU
-** warning ** It would be extremely slow to build within a docker machine via QEMU, from my experiense, it might need at least 8 hours to build FRocksDB once.
+**warning** It would be extremely slow to build within a docker machine via QEMU, from my experiense, it might need at least 8 hours to build FRocksDB once.
 
 Use Ubuntu 16.04 (e.g. AWS instance 4 cores, 16GB RAM, 40GB storage for build).
 Install git if not installed. If docker is installed, it might need to be removed.
@@ -74,6 +78,12 @@ Build frocksdb:
 
 The result native libraries are `java/target/librocksdbjni-linux-ppc64le.so` and `java/target/librocksdbjni-linux-ppc64le-musl.so`.
 
+## Build on ARM machines
+Run commands separately to get binaries.
+
+    make jclaen clean rocksdbjavastaticdockerarm64v8
+    make jclaen clean rocksdbjavastaticdockerarm64v8musl
+
 ## Final crossbuild in Mac OSX
 
 Read how to Build cross jar for Mac OSX and linux as described in java/RELEASE.md but do not run it yet.
@@ -85,6 +95,8 @@ Run commands:
     cp <path-to-windows-dll>/librocksdbjni-win64.dll java/target/librocksdbjni-win64.dll
     cp <path-to-ppc64le-lib-so>/librocksdbjni-linux-ppc64le.so java/target/librocksdbjni-linux-ppc64le.so
     cp <path-to-ppc64le-musl-lib-so>/librocksdbjni-linux-ppc64le-musl.so java/target/librocksdbjni-linux-ppc64le-musl.so
+    cp <path-to-arm-lib-so>/librocksdbjni-linux-aarch64.so java/target/librocksdbjni-linux-aarch64.so
+    cp <path-to-arm-musl-lib-so>/librocksdbjni-linux-aarch64-musl.so java/target/librocksdbjni-linux-aarch64-musl.so
     FROCKSDB_VERSION=1.0 PORTABLE=1 ROCKSDB_DISABLE_JEMALLOC=true make clean frocksdbjavastaticreleasedocker
 
 * Note, we disable jemalloc on mac due to https://github.com/facebook/rocksdb/issues/5787

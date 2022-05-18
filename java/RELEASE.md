@@ -56,4 +56,4 @@ This command will [stage the JAR artifacts on the Sonatype staging repository](h
 2. Select the rocksdb staging repository, and inspect its contents.
 3. If all is well, follow [these steps](https://oss.sonatype.org/#stagingRepositories) to close the repository and release it.
 
-After the release has occurred, the artifacts will be synced to Maven central within 24-48 hours.
+After the release has occurred, the artifacts will be synced to Maven central within 24-48 hours. 

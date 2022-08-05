@@ -163,7 +163,7 @@ jobs:
 
   build-linux:
     machine:
-      image: ubuntu-1604:202007-01
+      image: ubuntu-2004:202111-02
     resource_class: 2xlarge
     steps:
       - pre-steps
@@ -173,7 +173,7 @@ jobs:
 
   build-linux-mem-env:
     machine:
-      image: ubuntu-1604:202007-01
+      image: ubuntu-2004:202111-02
     resource_class: 2xlarge
     steps:
       - pre-steps
@@ -183,7 +183,7 @@ jobs:
 
   build-linux-encrypted-env:
     machine:
-      image: ubuntu-1604:202007-01
+      image: ubuntu-2004:202111-02
     resource_class: 2xlarge
     steps:
       - pre-steps
@@ -193,7 +193,7 @@ jobs:
 
   build-linux-shared_lib-alt_namespace-status_checked:
     machine:
-      image: ubuntu-1604:202007-01
+      image: ubuntu-2004:202111-02
     resource_class: 2xlarge
     steps:
       - pre-steps
@@ -203,7 +203,7 @@ jobs:
 
   build-linux-release:
     machine:
-      image: ubuntu-1604:202007-01
+      image: ubuntu-2004:202111-02
     resource_class: large
     steps:
       - checkout # check out the code in the project directory
@@ -216,7 +216,7 @@ jobs:
 
   build-linux-release-rtti:
     machine:
-      image: ubuntu-1604:201903-01
+      image: ubuntu-2004:202111-02
     resource_class: large
     steps:
       - checkout # check out the code in the project directory
@@ -230,7 +230,7 @@ jobs:
 
   build-linux-lite:
     machine:
-      image: ubuntu-1604:202007-01
+      image: ubuntu-2004:202111-02
     resource_class: 2xlarge
     steps:
       - pre-steps
@@ -240,7 +240,7 @@ jobs:
 
   build-linux-lite-release:
     machine:
-      image: ubuntu-1604:202007-01
+      image: ubuntu-2004:202111-02
     resource_class: large
     steps:
       - checkout # check out the code in the project directory
@@ -253,7 +253,7 @@ jobs:
 
   build-linux-clang-no_test_run:
     machine:
-      image: ubuntu-1604:202007-01
+      image: ubuntu-2004:202111-02
     resource_class: xlarge
     steps:
       - checkout # check out the code in the project directory
@@ -263,7 +263,7 @@ jobs:
 
   build-linux-clang10-asan:
     machine:
-      image: ubuntu-1604:202007-01
+      image: ubuntu-2004:202111-02
     resource_class: 2xlarge
     steps:
       - pre-steps
@@ -274,7 +274,7 @@ jobs:
 
   build-linux-clang10-mini-tsan:
     machine:
-      image: ubuntu-1604:202007-01
+      image: ubuntu-2004:202111-02
     resource_class: 2xlarge
     steps:
       - pre-steps
@@ -285,7 +285,7 @@ jobs:
 
   build-linux-clang10-ubsan:
     machine:
-      image: ubuntu-1604:202007-01
+      image: ubuntu-2004:202111-02
     resource_class: 2xlarge
     steps:
       - pre-steps
@@ -296,7 +296,7 @@ jobs:
 
   build-linux-clang10-clang-analyze:
     machine:
-      image: ubuntu-1604:202007-01
+      image: ubuntu-2004:202111-02
     resource_class: 2xlarge
     steps:
       - pre-steps
@@ -308,7 +308,7 @@ jobs:
 
   build-linux-cmake-no_test_run:
     machine:
-      image: ubuntu-1604:202007-01
+      image: ubuntu-2004:202111-02
     resource_class: large
     steps:
       - checkout # check out the code in the project directory
@@ -327,7 +327,7 @@ jobs:
 
   build-linux-gcc-4_8-no_test_run:
     machine:
-      image: ubuntu-1604:202007-01
+      image: ubuntu-2004:202111-02
     resource_class: large
     steps:
       - pre-steps
@@ -445,7 +445,7 @@ jobs:
 
   build-linux-java:
     machine:
-      image: ubuntu-1604:202007-01
+      image: ubuntu-2004:202111-02
     resource_class: large
     environment:
       JAVA_HOME: /usr/lib/jvm/java-1.8.0-openjdk-amd64
@@ -469,7 +469,7 @@ jobs:
 
   build-linux-java-static:
     machine:
-      image: ubuntu-1604:202007-01
+      image: ubuntu-2004:202111-02
     resource_class: large
     environment:
       JAVA_HOME: /usr/lib/jvm/java-1.8.0-openjdk-amd64
@@ -568,7 +568,7 @@ jobs:
 
   build-examples:
     machine:
-      image: ubuntu-1604:202007-01
+      image: ubuntu-2004:202111-02
     resource_class: large
     steps:
       - pre-steps
@@ -581,7 +581,7 @@ jobs:
 
   build-cmake-mingw:
     machine:
-      image: ubuntu-1604:202007-01
+      image: ubuntu-2004:202111-02
     resource_class: 2xlarge
     steps:
       - pre-steps
@@ -604,7 +604,7 @@ jobs:
 
   build-linux-non-shm:
     machine:
-      image: ubuntu-1604:202007-01
+      image: ubuntu-2004:202111-02
     resource_class: 2xlarge
     parameters:
       start_test:
@@ -634,7 +634,7 @@ jobs:
 
   build-format-compatible:
     machine:
-      image: ubuntu-1604:202007-01
+      image: ubuntu-2004:202111-02
     resource_class: 2xlarge
     steps:
       - pre-steps

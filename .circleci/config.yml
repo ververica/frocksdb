@@ -83,8 +83,9 @@ commands:
       - run:
           name: Install Clang 10
           command: |
-            echo "deb http://apt.llvm.org/xenial/ llvm-toolchain-xenial-10 main" | sudo tee -a /etc/apt/sources.list
-            echo "deb-src http://apt.llvm.org/xenial/ llvm-toolchain-xenial-10 main" | sudo tee -a /etc/apt/sources.list
+            wget -O - https://apt.llvm.org/llvm-snapshot.gpg.key | sudo apt-key add -
+            echo "deb http://apt.llvm.org/focal/ llvm-toolchain-focal-10 main" | sudo tee -a /etc/apt/sources.list
+            echo "deb-src http://apt.llvm.org/focal/ llvm-toolchain-focal-10 main" | sudo tee -a /etc/apt/sources.list
             echo "APT::Acquire::Retries \"10\";" | sudo tee -a /etc/apt/apt.conf.d/80-retries # llvm.org unreliable
             sudo apt-get update -y && sudo apt-get install -y clang-10
 
@@ -654,12 +655,14 @@ workflows:
   build-linux:
     jobs:
       - build-linux
-  build-linux-mem-env:
-    jobs:
-      - build-linux-mem-env
-  build-linux-encrypted-env:
-    jobs:
-      - build-linux-encrypted-env
+# Temporarily disable CI tests on mem-env as we would not update linux binaries in FLINK-24932.
+#  build-linux-mem-env:
+#    jobs:
+#      - build-linux-mem-env
+# Temporarily disable CI tests on encrypted-env as we would not update linux binaries in FLINK-24932.
+#  build-linux-encrypted-env:
+#    jobs:
+#      - build-linux-encrypted-env
   build-linux-shared_lib-alt_namespace-status_checked:
     jobs:
       - build-linux-shared_lib-alt_namespace-status_checked
@@ -739,7 +742,8 @@ workflows:
     jobs:
       - build-linux-clang-no_test_run
       - build-linux-clang-13-no_test_run
-      - build-linux-gcc-4_8-no_test_run
+      # Temporarily disable CI tests with gcc-4.8 as it is not supported in ubuntu-20.4 in FLINK-24932.
+      #- build-linux-gcc-4_8-no_test_run
       - build-linux-gcc-8-no_test_run
       - build-linux-gcc-9-no_test_run
       - build-linux-gcc-10-cxx20-no_test_run
@@ -749,9 +753,10 @@ workflows:
   build-macos-cmake:
     jobs:
       - build-macos-cmake
-  build-cmake-mingw:
-    jobs:
-      - build-cmake-mingw
+# Temporarily disable CI tests on mingw as we would not update windows binaries in FLINK-24932.
+#  build-cmake-mingw:
+#    jobs:
+#      - build-cmake-mingw
   nightly:
     triggers:
       - schedule:

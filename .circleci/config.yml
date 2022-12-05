@@ -147,7 +147,9 @@ jobs:
       - install-pyenv-on-macos
       - install-gflags-on-macos
       - pre-steps-macos
-      - run: ulimit -S -n 1048576 && OPT=-DCIRCLECI make V=1 J=32 -j32 check | .circleci/cat_ignore_eagain
+      - run:
+          command: ulimit -S -n 1048576 && OPT=-DCIRCLECI make V=1 J=32 -j32 check | .circleci/cat_ignore_eagain
+          no_output_timeout: 30m
       - post-steps
 
   build-macos-cmake:

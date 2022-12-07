@@ -133,13 +133,14 @@ executors:
   windows-2xlarge:
     machine:
       image: 'windows-server-2019-vs2019:stable'
-      resource_class: windows.2xlarge
+      resource_class: windows.xlarge
       shell: bash.exe
 
 jobs:
   build-macos:
     macos:
       xcode: 12.5.1
+    resource_class: medium
     environment:
       DISABLE_JEMALLOC: 1 # jemalloc cause env_test hang, disable it for now
     steps:
@@ -148,8 +149,8 @@ jobs:
       - install-gflags-on-macos
       - pre-steps-macos
       - run:
-          command: ulimit -S -n 1048576 && OPT=-DCIRCLECI make V=1 J=32 -j32 check | .circleci/cat_ignore_eagain
-          no_output_timeout: 30m
+          command: ulimit -S -n `ulimit -H -n` && OPT=-DCIRCLECI make V=1 J=32 -j32 all | .circleci/cat_ignore_eagain
+          no_output_timeout: 60m
       - post-steps
 
   build-macos-cmake:
@@ -167,7 +168,7 @@ jobs:
   build-linux:
     machine:
       image: ubuntu-2004:202111-02
-    resource_class: 2xlarge
+    resource_class: xlarge
     steps:
       - pre-steps
       - install-gflags
@@ -177,7 +178,7 @@ jobs:
   build-linux-mem-env:
     machine:
       image: ubuntu-2004:202111-02
-    resource_class: 2xlarge
+    resource_class: xlarge
     steps:
       - pre-steps
       - install-gflags
@@ -187,7 +188,7 @@ jobs:
   build-linux-encrypted-env:
     machine:
       image: ubuntu-2004:202111-02
-    resource_class: 2xlarge
+    resource_class: xlarge
     steps:
       - pre-steps
       - install-gflags
@@ -197,7 +198,7 @@ jobs:
   build-linux-shared_lib-alt_namespace-status_checked:
     machine:
       image: ubuntu-2004:202111-02
-    resource_class: 2xlarge
+    resource_class: xlarge
     steps:
       - pre-steps
       - install-gflags
@@ -234,7 +235,7 @@ jobs:
   build-linux-lite:
     machine:
       image: ubuntu-2004:202111-02
-    resource_class: 2xlarge
+    resource_class: xlarge
     steps:
       - pre-steps
       - install-gflags
@@ -267,7 +268,7 @@ jobs:
   build-linux-clang10-asan:
     machine:
       image: ubuntu-2004:202111-02
-    resource_class: 2xlarge
+    resource_class: xlarge
     steps:
       - pre-steps
       - install-gflags
@@ -278,7 +279,7 @@ jobs:
   build-linux-clang10-mini-tsan:
     machine:
       image: ubuntu-2004:202111-02
-    resource_class: 2xlarge
+    resource_class: xlarge
     steps:
       - pre-steps
       - install-gflags
@@ -289,7 +290,7 @@ jobs:
   build-linux-clang10-ubsan:
     machine:
       image: ubuntu-2004:202111-02
-    resource_class: 2xlarge
+    resource_class: xlarge
     steps:
       - pre-steps
       - install-gflags
@@ -300,7 +301,7 @@ jobs:
   build-linux-clang10-clang-analyze:
     machine:
       image: ubuntu-2004:202111-02
-    resource_class: 2xlarge
+    resource_class: xlarge
     steps:
       - pre-steps
       - install-gflags
@@ -585,7 +586,7 @@ jobs:
   build-cmake-mingw:
     machine:
       image: ubuntu-2004:202111-02
-    resource_class: 2xlarge
+    resource_class: xlarge
     steps:
       - pre-steps
       - install-gflags
@@ -608,7 +609,7 @@ jobs:
   build-linux-non-shm:
     machine:
       image: ubuntu-2004:202111-02
-    resource_class: 2xlarge
+    resource_class: xlarge
     parameters:
       start_test:
         default: ""
@@ -638,7 +639,7 @@ jobs:
   build-format-compatible:
     machine:
       image: ubuntu-2004:202111-02
-    resource_class: 2xlarge
+    resource_class: xlarge
     steps:
       - pre-steps
       - install-gflags

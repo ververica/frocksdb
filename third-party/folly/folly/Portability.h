@@ -25,6 +25,12 @@
 #define FOLLY_AARCH64 0
 #endif
 
+#if defined(__loongarch64)
+#define FOLLY_LOONGARCH64 1
+#else
+#define FOLLY_LOONGARCH64 0
+#endif
+
 #if defined(__powerpc64__)
 #define FOLLY_PPC64 1
 #else

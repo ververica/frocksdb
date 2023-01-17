@@ -491,7 +491,7 @@ jobs:
             which javac && javac -version
       - run:
           name: "Build RocksDBJava Static Library"
-          command: DEBUG_LEVEL=0  ROCKSDB_DISABLE_JEMALLOC=true PORTABLE=1  CXXFLAGS="-Wno-error=shadow -Wno-error-defaulted-function-deleted -Wno-unknown-warning-option "  make V=1 J=8 -j8 rocksdbjavastaticdockerx86 | .circleci/cat_ignore_eagain
+          command: DEBUG_LEVEL=0  ROCKSDB_DISABLE_JEMALLOC=true PORTABLE=1  CXXFLAGS="-Wno-error=shadow -Wno-error-defaulted-function-deleted -Wno-unknown-warning-option "  make V=1 J=8 -j8 rocksdbjavastaticreleasedocker | .circleci/cat_ignore_eagain
       - store_artifacts:
            path: java/target
       - post-steps

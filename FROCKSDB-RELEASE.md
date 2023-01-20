@@ -155,6 +155,8 @@ script:
 
 **Make sure to set the `ARTIFACTS_KEY` and `ARTIFACTS_SECRET` environment variables in the Travis Job with valid AWS credentials to access the S3 bucket you defined.**
 
+**Make sure to avoid signatureV4-only S3 regions to store the uploaded artifacts (due to unresolved https://github.com/travis-ci/artifacts/issues/57). You can just choose the S3 bucket of `us-east-1` region for 100% compatibility.**
+
 **Once finished, the`librocksdbjni-linux-ppce64le.so` and `librocksdbjni-linux-ppce64le-musl.so` binaries will be in the S3 bucket. You will need these .so binaries in the final crossbuild.**
 
 

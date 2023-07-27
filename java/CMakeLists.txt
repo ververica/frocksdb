@@ -34,7 +34,9 @@ set(JNI_NATIVE_SOURCES
         rocksjni/event_listener.cc
         rocksjni/event_listener_jnicallback.cc
         rocksjni/flink_compactionfilterjni.cc
+        rocksjni/export_import_files_metadatajni.cc
         rocksjni/filter.cc
+        rocksjni/import_column_family_options.cc
         rocksjni/ingest_external_file_options.cc
         rocksjni/iterator.cc
         rocksjni/jnicallback.cc
@@ -150,6 +152,7 @@ set(JAVA_MAIN_CLASSES
   src/main/java/org/rocksdb/EnvOptions.java
   src/main/java/org/rocksdb/EventListener.java
   src/main/java/org/rocksdb/Experimental.java
+  src/main/java/org/rocksdb/ExportImportFilesMetaData.java
   src/main/java/org/rocksdb/ExternalFileIngestionInfo.java
   src/main/java/org/rocksdb/Filter.java
   src/main/java/org/rocksdb/FileOperationInfo.java
@@ -162,6 +165,7 @@ set(JAVA_MAIN_CLASSES
   src/main/java/org/rocksdb/HistogramData.java
   src/main/java/org/rocksdb/HistogramType.java
   src/main/java/org/rocksdb/Holder.java
+  src/main/java/org/rocksdb/ImportColumnFamilyOptions.java
   src/main/java/org/rocksdb/IndexShorteningMode.java
   src/main/java/org/rocksdb/IndexType.java
   src/main/java/org/rocksdb/InfoLogLevel.java

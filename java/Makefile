@@ -140,6 +140,7 @@ JAVA_TESTS = \
 	org.rocksdb.util.JNIComparatorTest\
 	org.rocksdb.FilterTest\
 	org.rocksdb.FlushTest\
+	org.rocksdb.ImportColumnFamilyTest\
 	org.rocksdb.InfoLogLevelTest\
 	org.rocksdb.KeyMayExistTest\
 	org.rocksdb.ConcurrentTaskLimiterTest\

@@ -605,7 +605,7 @@ jobs:
             which javac && javac -version
       - run:
           name: "Build RocksDBJava Static Library"
-          command: DEBUG_LEVEL=0  ROCKSDB_DISABLE_JEMALLOC=true PORTABLE=1  CXXFLAGS="-Wno-error=shadow -Wno-error-defaulted-function-deleted -Wno-unknown-warning-option " make V=1 J=8 -j8 rocksdbjavastaticrelease
+          command: DEBUG_LEVEL=0  ROCKSDB_DISABLE_JEMALLOC=true PORTABLE=1  CXXFLAGS="-Wno-error=shadow -Wno-error-defaulted-function-deleted -Wno-unknown-warning-option " make V=1 J=8 -j8 rocksdbjavastaticreleasedocker
       - store_artifacts:
           path: java/target
       - post-steps
@@ -881,7 +881,7 @@ workflows:
  #     - build-linux-java
       - build-linux-java-static
  #     - build-macos-java
- #     - build-macos-java-static
+      - build-macos-java-static
  #     - build-macos-java-static-universal
 #  jobs-macos:
 #    jobs:

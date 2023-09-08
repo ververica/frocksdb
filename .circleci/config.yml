@@ -589,7 +589,8 @@ jobs:
       - post-steps
 
   build-linux-java-static:
-    executor: linux-docker
+    machine:
+      image: ubuntu-2004:202111-02
     resource_class: large
     steps:
       - pre-steps
@@ -602,7 +603,7 @@ jobs:
             which javac && javac -version
       - run:
           name: "Build RocksDBJava Static Library"
-          command: DEBUG_LEVEL=0  ROCKSDB_DISABLE_JEMALLOC=true PORTABLE=1  CXXFLAGS="-Wno-error=shadow -Wno-error-defaulted-function-deleted -Wno-unknown-warning-option " make V=1 J=8 -j8 rocksdbjavastaticreleasedocker
+          command: DEBUG_LEVEL=0  ROCKSDB_DISABLE_JEMALLOC=true PORTABLE=1  CXXFLAGS="-Wno-error=shadow -Wno-error-defaulted-function-deleted -Wno-unknown-warning-option " make V=1 J=8 -j8 rocksdbjavastaticrelease
       - store_artifacts:
           path: java/target
       - post-steps
@@ -659,7 +660,7 @@ jobs:
   build-macos-java-static:
     macos:
       xcode: 12.5.1
-    resource_class: large
+    resource_class: medium
     environment:
       JAVA_HOME: /Library/Java/JavaVirtualMachines/adoptopenjdk-8.jdk/Contents/Home
     steps:

@@ -592,6 +592,8 @@ jobs:
     machine:
       image: ubuntu-2004:202111-02
     resource_class: large
+    environment:
+      JAVA_HOME: /usr/lib/jvm/java-1.8.0-openjdk-amd64
     steps:
       - pre-steps
       - run:
@@ -879,7 +881,7 @@ workflows:
  #     - build-linux-java
       - build-linux-java-static
  #     - build-macos-java
-      - build-macos-java-static
+ #     - build-macos-java-static
  #     - build-macos-java-static-universal
 #  jobs-macos:
 #    jobs:

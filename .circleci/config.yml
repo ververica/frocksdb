@@ -54,6 +54,8 @@ commands:
   pre-steps-macos:
     steps:
       - pre-steps
+      # Temporarily disable warning as error since we upgrade the image version, and there are lots of new introduced warnings.
+      - run: echo "export DISABLE_WARNING_AS_ERROR=1" >> $BASH_ENV
 
   post-steps:
     steps:
@@ -318,6 +320,8 @@ jobs:
     steps:
       - checkout # check out the code in the project directory
       - run: apt-get update -y && apt-get install -y libgflags-dev
+      # Temporarily disable warning as error since we upgrade the gcc version, and there are lots of new introduced warnings.
+      - run: echo "export DISABLE_WARNING_AS_ERROR=1" >> $BASH_ENV
       - run: TEST_TMPDIR=/dev/shm && make V=1 -j8 unity_test 
       - post-steps
 

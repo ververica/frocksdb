@@ -8,15 +8,7 @@ aliases:
   - &notify-on-master-failure
     fail_only: true
     only_for_branches: master
-
 commands:
-  install-pyenv-on-macos:
-    steps:
-      - run:
-          name: Install pyenv on macos
-          command: |
-            HOMEBREW_NO_AUTO_UPDATE=1 brew install pyenv
-
   install-cmake-on-macos:
     steps:
       - run:
@@ -29,7 +21,8 @@ commands:
       - run:
           name: Install JDK 8 on macos
           command: |
-            brew install --cask adoptopenjdk/openjdk/adoptopenjdk8
+            HOMEBREW_NO_AUTO_UPDATE=1 brew tap bell-sw/liberica
+            HOMEBREW_NO_AUTO_UPDATE=1 brew install --cask liberica-jdk8
 
   increase-max-open-files-on-macos:
     steps:
@@ -41,26 +34,26 @@ commands:
             sudo launchctl limit maxfiles 1048576
 
   pre-steps:
-    parameters:
-      python-version:
-        default: "3.5.9"
-        type: string
     steps:
       - checkout
-      - run: pyenv install --skip-existing <<parameters.python-version>>
-      - run: pyenv global <<parameters.python-version>>
       - run:
           name: Setup Environment Variables
           command: |
             echo "export GTEST_THROW_ON_FAILURE=0" >> $BASH_ENV
             echo "export GTEST_OUTPUT=\"xml:/tmp/test-results/\"" >> $BASH_ENV
             echo "export SKIP_FORMAT_BUCK_CHECKS=1" >> $BASH_ENV
-            echo "export PRINT_PARALLEL_OUTPUTS=1" >> $BASH_ENV
+            echo "export GTEST_COLOR=1" >> $BASH_ENV
+            echo "export CTEST_OUTPUT_ON_FAILURE=1" >> $BASH_ENV
+            echo "export CTEST_TEST_TIMEOUT=300" >> $BASH_ENV
+            echo "export ZLIB_DOWNLOAD_BASE=https://rocksdb-deps.s3.us-west-2.amazonaws.com/pkgs/zlib" >> $BASH_ENV
+            echo "export BZIP2_DOWNLOAD_BASE=https://rocksdb-deps.s3.us-west-2.amazonaws.com/pkgs/bzip2" >> $BASH_ENV
+            echo "export SNAPPY_DOWNLOAD_BASE=https://rocksdb-deps.s3.us-west-2.amazonaws.com/pkgs/snappy" >> $BASH_ENV
+            echo "export LZ4_DOWNLOAD_BASE=https://rocksdb-deps.s3.us-west-2.amazonaws.com/pkgs/lz4" >> $BASH_ENV
+            echo "export ZSTD_DOWNLOAD_BASE=https://rocksdb-deps.s3.us-west-2.amazonaws.com/pkgs/zstd" >> $BASH_ENV
 
   pre-steps-macos:
-      steps:
-        - pre-steps:
-            python-version: "3.7.8"
+    steps:
+      - pre-steps
 
   post-steps:
     steps:
@@ -139,30 +132,29 @@ executors:
 jobs:
   build-macos:
     macos:
-      xcode: 12.5.1
-    resource_class: medium
+      xcode: 14.3.1
+    resource_class: macos.m1.medium.gen1
     environment:
       DISABLE_JEMALLOC: 1 # jemalloc cause env_test hang, disable it for now
     steps:
       - increase-max-open-files-on-macos
-      - install-pyenv-on-macos
       - install-gflags-on-macos
       - pre-steps-macos
       - run:
-          command: ulimit -S -n 1048576 && OPT=-DCIRCLECI make V=1 J=32 -j32 all | .circleci/cat_ignore_eagain
+          command: ulimit -S -n 1048576 && OPT=-DCIRCLECI make V=1 J=16 -j16 all 
           no_output_timeout: 30m
       - post-steps
 
   build-macos-cmake:
     macos:
-      xcode: 12.5.1
+      xcode: 14.3.1
+    resource_class: macos.m1.medium.gen1
     steps:
       - increase-max-open-files-on-macos
-      - install-pyenv-on-macos
       - install-cmake-on-macos
       - install-gflags-on-macos
       - pre-steps-macos
-      - run: ulimit -S -n 1048576 && (mkdir build && cd build && cmake -DWITH_GFLAGS=0 .. && make V=1 -j32) | .circleci/cat_ignore_eagain
+      - run: ulimit -S -n 1048576 && (mkdir build && cd build && cmake -DWITH_GFLAGS=0 -DFAIL_ON_WARNINGS=OFF .. && make V=1 -j16) 
       - post-steps
 
   build-linux:
@@ -172,7 +164,7 @@ jobs:
     steps:
       - pre-steps
       - install-gflags
-      - run: make V=1 J=32 -j32 check | .circleci/cat_ignore_eagain
+      - run: make V=1 J=32 -j32 check 
       - post-steps
 
   build-linux-mem-env:
@@ -182,7 +174,7 @@ jobs:
     steps:
       - pre-steps
       - install-gflags
-      - run: MEM_ENV=1 make V=1 J=32 -j32 check | .circleci/cat_ignore_eagain
+      - run: MEM_ENV=1 make V=1 J=32 -j32 check 
       - post-steps
 
   build-linux-encrypted-env:
@@ -192,7 +184,7 @@ jobs:
     steps:
       - pre-steps
       - install-gflags
-      - run: ENCRYPTED_ENV=1 make V=1 J=32 -j32 check | .circleci/cat_ignore_eagain
+      - run: ENCRYPTED_ENV=1 make V=1 J=32 -j32 check 
       - post-steps
 
   build-linux-shared_lib-alt_namespace-status_checked:
@@ -202,7 +194,7 @@ jobs:
     steps:
       - pre-steps
       - install-gflags
-      - run: ASSERT_STATUS_CHECKED=1 TEST_UINT128_COMPAT=1 ROCKSDB_MODIFY_NPHASH=1 LIB_MODE=shared OPT="-DROCKSDB_NAMESPACE=alternative_rocksdb_ns" make V=1 -j32 check | .circleci/cat_ignore_eagain
+      - run: ASSERT_STATUS_CHECKED=1 TEST_UINT128_COMPAT=1 ROCKSDB_MODIFY_NPHASH=1 LIB_MODE=shared OPT="-DROCKSDB_NAMESPACE=alternative_rocksdb_ns" make V=1 -j32 check 
       - post-steps
 
   build-linux-release:
@@ -211,10 +203,10 @@ jobs:
     resource_class: large
     steps:
       - checkout # check out the code in the project directory
-      - run: make V=1 -j8 release | .circleci/cat_ignore_eagain
+      - run: make V=1 -j8 release 
       - run: if ./db_stress --version; then false; else true; fi # ensure without gflags
       - install-gflags
-      - run: make V=1 -j8 release | .circleci/cat_ignore_eagain
+      - run: make V=1 -j8 release 
       - run: ./db_stress --version # ensure with gflags
       - post-steps
 
@@ -225,11 +217,11 @@ jobs:
     steps:
       - checkout # check out the code in the project directory
       - run: make clean
-      - run: USE_RTTI=1 DEBUG_LEVEL=0 make V=1 -j8 static_lib tools db_bench | .circleci/cat_ignore_eagain
+      - run: USE_RTTI=1 DEBUG_LEVEL=0 make V=1 -j8 static_lib tools db_bench 
       - run: if ./db_stress --version; then false; else true; fi # ensure without gflags
       - run: sudo apt-get update -y && sudo apt-get install -y libgflags-dev
       - run: make clean
-      - run: USE_RTTI=1 DEBUG_LEVEL=0 make V=1 -j8 static_lib tools db_bench | .circleci/cat_ignore_eagain
+      - run: USE_RTTI=1 DEBUG_LEVEL=0 make V=1 -j8 static_lib tools db_bench 
       - run: ./db_stress --version # ensure with gflags
 
   build-linux-lite:
@@ -239,7 +231,7 @@ jobs:
     steps:
       - pre-steps
       - install-gflags
-      - run: LITE=1 make V=1 J=32 -j32 check | .circleci/cat_ignore_eagain
+      - run: LITE=1 make V=1 J=32 -j32 check 
       - post-steps
 
   build-linux-lite-release:
@@ -248,10 +240,10 @@ jobs:
     resource_class: large
     steps:
       - checkout # check out the code in the project directory
-      - run: LITE=1 make V=1 -j8 release | .circleci/cat_ignore_eagain
+      - run: LITE=1 make V=1 -j8 release 
       - run: if ./db_stress --version; then false; else true; fi # ensure without gflags
       - install-gflags
-      - run: LITE=1 make V=1 -j8 release | .circleci/cat_ignore_eagain
+      - run: LITE=1 make V=1 -j8 release 
       - run: ./db_stress --version # ensure with gflags
       - post-steps
 
@@ -262,7 +254,7 @@ jobs:
     steps:
       - checkout # check out the code in the project directory
       - run: sudo apt-get update -y && sudo apt-get install -y clang libgflags-dev
-      - run: CC=clang CXX=clang++ USE_CLANG=1 PORTABLE=1 make V=1 -j16 all | .circleci/cat_ignore_eagain
+      - run: CC=clang CXX=clang++ USE_CLANG=1 PORTABLE=1 make V=1 -j16 all 
       - post-steps
 
   build-linux-clang10-asan:
@@ -273,7 +265,7 @@ jobs:
       - pre-steps
       - install-gflags
       - install-clang-10
-      - run: COMPILE_WITH_ASAN=1 CC=clang-10 CXX=clang++-10 ROCKSDB_DISABLE_ALIGNED_NEW=1 USE_CLANG=1 make V=1 -j32 check | .circleci/cat_ignore_eagain # aligned new doesn't work for reason we haven't figured out
+      - run: COMPILE_WITH_ASAN=1 CC=clang-10 CXX=clang++-10 ROCKSDB_DISABLE_ALIGNED_NEW=1 USE_CLANG=1 make V=1 -j32 check # aligned new doesn't work for reason we haven't figured out
       - post-steps
 
   build-linux-clang10-mini-tsan:
@@ -284,7 +276,7 @@ jobs:
       - pre-steps
       - install-gflags
       - install-clang-10
-      - run: COMPILE_WITH_TSAN=1 CC=clang-10 CXX=clang++-10 ROCKSDB_DISABLE_ALIGNED_NEW=1 USE_CLANG=1 make V=1 -j32 check | .circleci/cat_ignore_eagain # aligned new doesn't work for reason we haven't figured out.
+      - run: COMPILE_WITH_TSAN=1 CC=clang-10 CXX=clang++-10 ROCKSDB_DISABLE_ALIGNED_NEW=1 USE_CLANG=1 make V=1 -j32 check # aligned new doesn't work for reason we haven't figured out.
       - post-steps
 
   build-linux-clang10-ubsan:
@@ -295,7 +287,7 @@ jobs:
       - pre-steps
       - install-gflags
       - install-clang-10
-      - run: COMPILE_WITH_UBSAN=1 OPT="-fsanitize-blacklist=.circleci/ubsan_suppression_list.txt" CC=clang-10 CXX=clang++-10 ROCKSDB_DISABLE_ALIGNED_NEW=1 USE_CLANG=1 make V=1 -j32 ubsan_check | .circleci/cat_ignore_eagain # aligned new doesn't work for reason we haven't figured out
+      - run: COMPILE_WITH_UBSAN=1 OPT="-fsanitize-blacklist=.circleci/ubsan_suppression_list.txt" CC=clang-10 CXX=clang++-10 ROCKSDB_DISABLE_ALIGNED_NEW=1 USE_CLANG=1 make V=1 -j32 ubsan_check # aligned new doesn't work for reason we haven't figured out
       - post-steps
 
   build-linux-clang10-clang-analyze:
@@ -307,7 +299,7 @@ jobs:
       - install-gflags
       - install-clang-10
       - run: sudo apt-get update -y && sudo apt-get install -y clang-tools-10
-      - run: CC=clang-10 CXX=clang++-10 ROCKSDB_DISABLE_ALIGNED_NEW=1 CLANG_ANALYZER="/usr/bin/clang++-10" CLANG_SCAN_BUILD=scan-build-10 USE_CLANG=1 make V=1 -j32 analyze | .circleci/cat_ignore_eagain # aligned new doesn't work for reason we haven't figured out. For unknown, reason passing "clang++-10" as CLANG_ANALYZER doesn't work, and we need a full path.
+      - run: CC=clang-10 CXX=clang++-10 ROCKSDB_DISABLE_ALIGNED_NEW=1 CLANG_ANALYZER="/usr/bin/clang++-10" CLANG_SCAN_BUILD=scan-build-10 USE_CLANG=1 make V=1 -j32 analyze # aligned new doesn't work for reason we haven't figured out. For unknown, reason passing "clang++-10" as CLANG_ANALYZER doesn't work, and we need a full path.
       - post-steps
 
   build-linux-cmake-no_test_run:
@@ -316,7 +308,7 @@ jobs:
     resource_class: large
     steps:
       - checkout # check out the code in the project directory
-      - run: (mkdir build && cd build && cmake -DWITH_GFLAGS=0 .. && make V=1 -j8) | .circleci/cat_ignore_eagain
+      - run: (mkdir build && cd build && cmake -DWITH_GFLAGS=0 .. && make V=1 -j8) 
       - post-steps
 
   build-linux-unity:
@@ -326,7 +318,7 @@ jobs:
     steps:
       - checkout # check out the code in the project directory
       - run: apt-get update -y && apt-get install -y libgflags-dev
-      - run: TEST_TMPDIR=/dev/shm && make V=1 -j8 unity_test | .circleci/cat_ignore_eagain
+      - run: TEST_TMPDIR=/dev/shm && make V=1 -j8 unity_test 
       - post-steps
 
   build-linux-gcc-4_8-no_test_run:
@@ -336,7 +328,7 @@ jobs:
     steps:
       - pre-steps
       - run: sudo apt-get update -y && sudo apt-get install gcc-4.8 g++-4.8 libgflags-dev
-      - run: CC=gcc-4.8 CXX=g++-4.8 V=1 SKIP_LINK=1 make -j8 all | .circleci/cat_ignore_eagain # Linking broken because libgflags compiled with newer ABI
+      - run: CC=gcc-4.8 CXX=g++-4.8 V=1 SKIP_LINK=1 make -j8 all # Linking broken because libgflags compiled with newer ABI
       - post-steps
 
   build-linux-gcc-8-no_test_run:
@@ -346,7 +338,7 @@ jobs:
     steps:
       - pre-steps
       - run: sudo apt-get update -y && sudo apt-get install gcc-8 g++-8 libgflags-dev
-      - run: CC=gcc-8 CXX=g++-8 V=1 SKIP_LINK=1 make -j8 all | .circleci/cat_ignore_eagain # Linking broken because libgflags compiled with newer ABI
+      - run: CC=gcc-8 CXX=g++-8 V=1 SKIP_LINK=1 make -j8 all # Linking broken because libgflags compiled with newer ABI
       - post-steps
 
   build-linux-gcc-9-no_test_run:
@@ -356,7 +348,7 @@ jobs:
     steps:
       - pre-steps
       - run: sudo apt-get update -y && sudo apt-get install gcc-9 g++-9 libgflags-dev
-      - run: CC=gcc-9 CXX=g++-9 V=1 SKIP_LINK=1 make -j8 all | .circleci/cat_ignore_eagain # Linking broken because libgflags compiled with newer ABI
+      - run: CC=gcc-9 CXX=g++-9 V=1 SKIP_LINK=1 make -j8 all # Linking broken because libgflags compiled with newer ABI
       - post-steps
 
   build-linux-gcc-10-cxx20-no_test_run:
@@ -366,7 +358,7 @@ jobs:
     steps:
       - pre-steps
       - run: sudo apt-get update -y && sudo apt-get install gcc-10 g++-10 libgflags-dev
-      - run: CC=gcc-10 CXX=g++-10 V=1 SKIP_LINK=1 ROCKSDB_CXX_STANDARD=c++20 make -j16 all 2>&1 | .circleci/cat_ignore_eagain # Linking broken because libgflags compiled with newer ABI
+      - run: CC=gcc-10 CXX=g++-10 V=1 SKIP_LINK=1 ROCKSDB_CXX_STANDARD=c++20 make -j16 all 2>&1 # Linking broken because libgflags compiled with newer ABI
       - post-steps
 
   build-linux-clang-13-no_test_run:
@@ -376,7 +368,7 @@ jobs:
     steps:
       - pre-steps
       - install-clang-13
-      - run: CC=clang-13 CXX=clang++-13 USE_CLANG=1 make -j16 all 2>&1 | .circleci/cat_ignore_eagain
+      - run: CC=clang-13 CXX=clang++-13 USE_CLANG=1 make -j16 all 2>&1 
       - post-steps
 
   build-windows:
@@ -465,10 +457,10 @@ jobs:
             which javac && javac -version
       - run:
           name: "Build RocksDBJava Shared Library"
-          command: make V=1 J=8 -j8 rocksdbjava | .circleci/cat_ignore_eagain
+          command: make V=1 J=8 -j8 rocksdbjava 
       - run:
           name: "Test RocksDBJava"
-          command: make V=1 J=8 -j8 jtest | .circleci/cat_ignore_eagain
+          command: make V=1 J=8 -j8 jtest 
       - post-steps
 
   build-linux-java-static:
@@ -489,19 +481,18 @@ jobs:
             which javac && javac -version
       - run:
           name: "Build RocksDBJava Static Library"
-          command: make V=1 J=8 -j8 rocksdbjavastatic | .circleci/cat_ignore_eagain
+          command: make V=1 J=8 -j8 rocksdbjavastatic 
       - post-steps
 
   build-macos-java:
     macos:
-      xcode: 12.5.1
-    resource_class: medium
+      xcode: 14.3.1
+      resource_class: macos.m1.medium.gen1
     environment:
-      JAVA_HOME: /Library/Java/JavaVirtualMachines/adoptopenjdk-8.jdk/Contents/Home
+      JAVA_HOME: /Library/Java/JavaVirtualMachines/liberica-jdk-8.jdk/Contents/Home
       DISABLE_JEMALLOC: 1 # jemalloc causes java 8 crash, maybe a known issue
     steps:
       - increase-max-open-files-on-macos
-      - install-pyenv-on-macos
       - install-gflags-on-macos
       - install-jdk8-on-macos
       - pre-steps-macos
@@ -514,21 +505,20 @@ jobs:
             which javac && javac -version
       - run:
           name: "Build RocksDBJava Shared Library"
-          command: make V=1 J=8 -j8 rocksdbjava | .circleci/cat_ignore_eagain
+          command: make V=1 J=8 -j8 rocksdbjava 
       - run:
           name: "Test RocksDBJava"
-          command: make V=1 J=8 -j8 jtest | .circleci/cat_ignore_eagain
+          command: make V=1 J=8 -j8 jtest 
       - post-steps
 
   build-macos-java-static:
     macos:
-      xcode: 12.5.1
-    resource_class: medium
+      xcode: 14.3.1
+    resource_class: macos.m1.medium.gen1
     environment:
-      JAVA_HOME: /Library/Java/JavaVirtualMachines/adoptopenjdk-8.jdk/Contents/Home
+      JAVA_HOME: /Library/Java/JavaVirtualMachines/liberica-jdk-8.jdk/Contents/Home
     steps:
       - increase-max-open-files-on-macos
-      - install-pyenv-on-macos
       - install-gflags-on-macos
       - install-cmake-on-macos
       - install-jdk8-on-macos
@@ -542,18 +532,17 @@ jobs:
             which javac && javac -version
       - run:
           name: "Build RocksDBJava x86 and ARM Static Libraries"
-          command: make V=1 J=8 -j8 rocksdbjavastaticosx 2>&1 | .circleci/cat_ignore_eagain
+          command: make V=1 J=8 -j8 rocksdbjavastaticosx 2>&1 
       - post-steps
 
   build-macos-java-static-universal:
     macos:
-      xcode: 12.5.1
-    resource_class: medium
+      xcode: 14.3.1
+    resource_class: macos.m1.medium.gen1
     environment:
-      JAVA_HOME: /Library/Java/JavaVirtualMachines/adoptopenjdk-8.jdk/Contents/Home
+      JAVA_HOME: /Library/Java/JavaVirtualMachines/liberica-jdk-8.jdk/Contents/Home
     steps:
       - increase-max-open-files-on-macos
-      - install-pyenv-on-macos
       - install-gflags-on-macos
       - install-cmake-on-macos
       - install-jdk8-on-macos
@@ -567,7 +556,7 @@ jobs:
             which javac && javac -version
       - run:
           name: "Build RocksDBJava Universal Binary Static Library"
-          command: make V=1 J=8 -j8 rocksdbjavastaticosx_ub 2>&1 | .circleci/cat_ignore_eagain
+          command: make V=1 J=8 -j8 rocksdbjavastaticosx_ub 2>&1 
       - post-steps
 
   build-examples:
@@ -580,7 +569,7 @@ jobs:
       - run:
           name: "Build examples"
           command: |
-            OPT=-DTRAVIS V=1 make -j4 static_lib && cd examples && make -j4 | ../.circleci/cat_ignore_eagain
+            OPT=-DTRAVIS V=1 make -j4 static_lib && cd examples && make -j4
       - post-steps
 
   build-cmake-mingw:

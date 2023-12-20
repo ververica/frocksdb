@@ -23,6 +23,8 @@ inline void asm_volatile_pause() {
   asm volatile("yield");
 #elif FOLLY_PPC64
   asm volatile("or 27,27,27");
+#elif defined(__loongarch64)
+  asm volatile("dbar 0");
 #endif
 }
 } // namespace folly

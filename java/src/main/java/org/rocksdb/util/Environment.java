@@ -22,6 +22,10 @@ public class Environment {
     return ARCH.contains("aarch64");
   }
 
+  public static boolean isLoongArch64() {
+    return ARCH.contains("loongarch64");
+  }
+
   public static boolean isPowerPC() {
     return ARCH.contains("ppc");
   }
@@ -103,7 +107,7 @@ public class Environment {
   public static String getJniLibraryName(final String name) {
     if (isUnix()) {
       final String arch = is64Bit() ? "64" : "32";
-      if (isPowerPC() || isAarch64()) {
+      if (isPowerPC() || isAarch64() || isLoongArch64()) {
         return String.format("%sjni-linux-%s%s", name, ARCH, getLibcPostfix());
       } else if (isS390x()) {
         return String.format("%sjni-linux%s", name, ARCH);

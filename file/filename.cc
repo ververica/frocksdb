@@ -26,12 +26,14 @@ static const std::string kRocksDBBlobFileExt = "blob";
 
 // Given a path, flatten the path name by replacing all chars not in
 // {[0-9,a-z,A-Z,-,_,.]} with _. And append '_LOG\0' at the end.
+// If the given path append the '_LOG\0' longer then 255, only the last 255 characters will be kept.
 // Return the number of chars stored in dest not including the trailing '\0'.
 static size_t GetInfoLogPrefix(const std::string& path, char* dest, int len) {
   const char suffix[] = "_LOG";
+  const size_t file_name_length_limit = 255;
 
   size_t write_idx = 0;
-  size_t i = 0;
+  size_t i = std::max(0L, (long)path.length() - (long)(file_name_length_limit - sizeof(suffix)));
   size_t src_len = path.size();
 
   while (i < src_len && write_idx < len - sizeof(suffix)) {

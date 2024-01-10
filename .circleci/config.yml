@@ -315,7 +315,7 @@ jobs:
 
   build-linux-unity:
     docker: # executor type
-      - image: gcc:latest
+      - image: gcc:12.3.0
     resource_class: large
     steps:
       - checkout # check out the code in the project directory

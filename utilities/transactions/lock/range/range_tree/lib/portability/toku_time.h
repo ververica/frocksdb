@@ -133,6 +133,10 @@ static inline tokutime_t toku_time_now(void) {
   return result;
 #elif defined(__powerpc__)
   return __ppc_get_timebase();
+#elif defined(__loongarch64)
+  unsigned long result;
+  asm volatile ("rdtime.d\t%0,$r0" : "=r" (result));
+  return result;
 #else
 #error No timer implementation for this platform
 #endif

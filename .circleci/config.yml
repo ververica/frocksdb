@@ -779,6 +779,44 @@ jobs:
           path: java/target
       - post-steps
 
+  build-linux-ppc64le-docker-musl:
+    executor: linux-docker
+    resource_class: large
+    steps:
+      - pre-steps
+      - run:
+          name: "Set Java Environment"
+          command: |
+            echo "JAVA_HOME=${JAVA_HOME}"
+            echo 'export PATH=$JAVA_HOME/bin:$PATH' >> $BASH_ENV
+            which java && java -version
+            which javac && javac -version
+      - run:
+          name: "Build rocksdbjavastaticdockerppc64lemusl"
+          command: DEBUG_LEVEL=0  ROCKSDB_DISABLE_JEMALLOC=true PORTABLE=1  CXXFLAGS="-I${JAVA_HOME}/include -I${JAVA_HOME}/include/linux -Wno-error=shadow -Wno-error-defaulted-function-deleted -Wno-unknown-warning-option -Wno-error=unused-parameter -Wno-error=unused-variable" make V=1 J=8 -j8 rocksdbjavastaticdockerppc64lemusl
+      - store_artifacts:
+          path: java/target
+      - post-steps
+
+  build-linux-ppc64le-docker:
+    executor: linux-docker
+    resource_class: large
+    steps:
+      - pre-steps
+      - run:
+          name: "Set Java Environment"
+          command: |
+            echo "JAVA_HOME=${JAVA_HOME}"
+            echo 'export PATH=$JAVA_HOME/bin:$PATH' >> $BASH_ENV
+            which java && java -version
+            which javac && javac -version
+      - run:
+          name: "Build rocksdbjavastaticdockerppc64le"
+          command: DEBUG_LEVEL=0  ROCKSDB_DISABLE_JEMALLOC=true PORTABLE=1  CXXFLAGS="-I${JAVA_HOME}/include -I${JAVA_HOME}/include/linux -Wno-error=shadow -Wno-error-defaulted-function-deleted -Wno-unknown-warning-option -Wno-error=unused-parameter -Wno-error=unused-variable" make V=1 J=8 -j8 rocksdbjavastaticdockerppc64le
+      - store_artifacts:
+          path: java/target
+      - post-steps
+
   build-linux-arm-cmake-no_test_run:
     machine:
       image: ubuntu-2004:202111-02
@@ -891,6 +929,8 @@ workflows:
     jobs:
       - build-linux-arm-docker-musl
       - build-linux-arm-docker
+      - build-linux-ppc64le-docker-musl
+      - build-linux-ppc64le-docker
 #  jobs-java:
 #    jobs:
 #      - build-linux-java

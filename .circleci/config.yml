@@ -845,20 +845,20 @@ workflows:
       - build-windows-vs2022
       - build-windows-vs2019
       - build-cmake-mingw
-#  jobs-java:
-#    jobs:
-#      - build-linux-java
-#      - build-linux-java-static
-#      - build-macos-java
-#      - build-macos-java-static
-#      - build-macos-java-static-universal
-#  jobs-macos:
-#    jobs:
-#      - build-macos
-#      - build-macos-cmake:
-#          run_even_tests: true
-#      - build-macos-cmake:
-#          run_even_tests: false
+  jobs-java:
+    jobs:
+      - build-linux-java
+      - build-linux-java-static
+      - build-macos-java
+      - build-macos-java-static
+      - build-macos-java-static-universal
+  jobs-macos:
+    jobs:
+      - build-macos
+      - build-macos-cmake:
+          run_even_tests: true
+      - build-macos-cmake:
+          run_even_tests: false
 #  jobs-linux-arm:
 #    jobs:
 #      - build-linux-arm

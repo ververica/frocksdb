@@ -111,10 +111,6 @@ LIB_SOURCES =                                                   \
   env/io_posix.cc                                               \
   env/mock_env.cc                                               \
   env/unique_id_gen.cc                                          \
-  env/flink/env_flink.cc										\
-  env/flink/jvm_util.cc											\
-  env/flink/jni_helper.cc										\
-  env/flink/env_flink_test_suite.cc 							\
   file/delete_scheduler.cc                                      \
   file/file_prefetch_buffer.cc                                  \
   file/file_util.cc                                             \
@@ -724,4 +720,8 @@ JNI_NATIVE_SOURCES =                                          \
   java/rocksjni/writebatchhandlerjnicallback.cc               \
   java/rocksjni/write_batch_test.cc                           \
   java/rocksjni/write_batch_with_index.cc                     \
-  java/rocksjni/write_buffer_manager.cc
+  java/rocksjni/write_buffer_manager.cc						  \
+  env/flink/env_flink.cc									  \
+  env/flink/jvm_util.cc									      \
+  env/flink/jni_helper.cc									  \
+  env/flink/env_flink_test_suite.cc							  \

@@ -1016,11 +1016,7 @@ else()
     port/port_posix.cc
     env/env_posix.cc
     env/fs_posix.cc
-    env/io_posix.cc
-    env/flink/env_flink.cc
-    env/flink/jvm_util.cc
-    env/flink/jni_helper.cc
-    env/flink/env_flink_test_suite.cc)
+    env/io_posix.cc)
 endif()
 
 if(USE_FOLLY_LITE)
@@ -1159,6 +1155,11 @@ if(WITH_JNI OR JNI)
   if(${CMAKE_SYSTEM_NAME} STREQUAL "Linux")
     include_directories(${JNI_INCLUDE_DIRS}/linux)
   endif ()
+  list(APPEND SOURCES
+          env/flink/env_flink.cc
+          env/flink/jvm_util.cc
+          env/flink/jni_helper.cc
+          env/flink/env_flink_test_suite.cc)
 else()
   message(STATUS "JNI library is disabled")
 endif()

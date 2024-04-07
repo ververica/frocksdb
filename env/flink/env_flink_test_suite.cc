@@ -18,6 +18,7 @@
 
 #include "env/flink/env_flink_test_suite.h"
 
+#include <algorithm>
 #include <fstream>
 #include <iostream>
 

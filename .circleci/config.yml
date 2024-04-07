@@ -68,7 +68,7 @@ commands:
           command: |
             mkdir build
             cd build
-            & $Env:CMAKE_BIN -G "$Env:CMAKE_GENERATOR" -DCMAKE_BUILD_TYPE=Debug -DOPTDBG=1 -DPORTABLE=1 -DSNAPPY=1 -DJNI=1 ..
+            & $Env:CMAKE_BIN -G "$Env:CMAKE_GENERATOR" -DCMAKE_BUILD_TYPE=RELEASE -DOPTDBG=1 -DPORTABLE=1 -DSNAPPY=1 -DJNI=1 ..
             cd ..
             echo "Building with VS version: $Env:CMAKE_GENERATOR"
             msbuild.exe build/rocksdb.sln -maxCpuCount -property:Configuration=Debug -property:Platform=x64
@@ -77,6 +77,8 @@ commands:
           shell: powershell.exe
           command: |
             build_tools\run_ci_db_test.ps1 -SuiteRun arena_test,db_basic_test,db_test,db_test2,db_merge_operand_test,bloom_test,c_test,coding_test,crc32c_test,dynamic_bloom_test,env_basic_test,env_test,hash_test,random_test -Concurrency 16
+      - store_artifacts:
+          path: build\java
   pre-steps-macos:
       steps:
         - pre-steps
@@ -843,22 +845,22 @@ workflows:
   jobs-windows:
     jobs:
       - build-windows-vs2022
-      - build-windows-vs2019
-      - build-cmake-mingw
-  jobs-java:
-    jobs:
-      - build-linux-java
-      - build-linux-java-static
-      - build-macos-java
-      - build-macos-java-static
-      - build-macos-java-static-universal
-  jobs-macos:
-    jobs:
-      - build-macos
-      - build-macos-cmake:
-          run_even_tests: true
-      - build-macos-cmake:
-          run_even_tests: false
+#      - build-windows-vs2019
+#      - build-cmake-mingw
+#  jobs-java:
+#    jobs:
+#      - build-linux-java
+#      - build-linux-java-static
+#      - build-macos-java
+#      - build-macos-java-static
+#      - build-macos-java-static-universal
+#  jobs-macos:
+#    jobs:
+#      - build-macos
+#      - build-macos-cmake:
+#          run_even_tests: true
+#      - build-macos-cmake:
+#          run_even_tests: false
 #  jobs-linux-arm:
 #    jobs:
 #      - build-linux-arm

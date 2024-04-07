@@ -1008,7 +1008,11 @@ endif()
 
 if(WITH_JEMALLOC)
   list(APPEND SOURCES
-    port/win/win_jemalloc.cc)
+    port/win/win_jemalloc.cc
+    env/flink/env_flink.cc
+    env/flink/jvm_util.cc
+    env/flink/jni_helper.cc
+    env/flink/env_flink_test_suite.cc)
 endif()
 
 else()

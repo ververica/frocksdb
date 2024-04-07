@@ -1000,7 +1000,11 @@ if(WIN32)
     port/win/env_default.cc
     port/win/port_win.cc
     port/win/win_logger.cc
-    port/win/win_thread.cc)
+    port/win/win_thread.cc
+    env/flink/env_flink.cc
+    env/flink/jvm_util.cc
+    env/flink/jni_helper.cc
+    env/flink/env_flink_test_suite.cc)
 if(WITH_XPRESS)
   list(APPEND SOURCES
     port/win/xpress_win.cc)
@@ -1008,11 +1012,7 @@ endif()
 
 if(WITH_JEMALLOC)
   list(APPEND SOURCES
-    port/win/win_jemalloc.cc
-    env/flink/env_flink.cc
-    env/flink/jvm_util.cc
-    env/flink/jni_helper.cc
-    env/flink/env_flink_test_suite.cc)
+    port/win/win_jemalloc.cc)
 endif()
 
 else()

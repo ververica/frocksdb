@@ -195,7 +195,7 @@ To start the crossbuild within a Mac OSX environment:
     cp <path-to-ppc64le-musl-lib-so>/librocksdbjni-linux-ppc64le-musl.so java/target/librocksdbjni-linux-ppc64le-musl.so
     cp <path-to-arm-lib-so>/librocksdbjni-linux-aarch64.so java/target/librocksdbjni-linux-aarch64.so
     cp <path-to-arm-musl-lib-so>/librocksdbjni-linux-aarch64-musl.so java/target/librocksdbjni-linux-aarch64-musl.so
-    FROCKSDB_VERSION=1.0 PORTABLE=1 ROCKSDB_DISABLE_JEMALLOC=true DEBUG_LEVEL=0 make frocksdbjavastaticreleasedocker
+    FROCKSDB_VERSION=1.0 PORTABLE=1 ROCKSDB_DISABLE_JEMALLOC=true DEBUG_LEVEL=0 DISABLE_PERF_CONTEXT=1 make frocksdbjavastaticreleasedocker
 
 *Note, we disable jemalloc on mac due to https://github.com/facebook/rocksdb/issues/5787*.
 
